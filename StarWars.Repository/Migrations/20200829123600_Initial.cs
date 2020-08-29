@@ -12,7 +12,7 @@ namespace StarWars.Repository.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -25,7 +25,7 @@ namespace StarWars.Repository.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,6 +81,12 @@ namespace StarWars.Repository.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Character_Name",
+                table: "Character",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CharacterEpisode_EpisodeId",
                 table: "CharacterEpisode",
                 column: "EpisodeId");
@@ -89,6 +95,12 @@ namespace StarWars.Repository.Migrations
                 name: "IX_CharacterFriendship_FriendId",
                 table: "CharacterFriendship",
                 column: "FriendId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Episode_Name",
+                table: "Episode",
+                column: "Name",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -39,6 +39,10 @@ namespace StarWars.Repository.DbModels
 
             modelBuilder.Entity<CharacterEpisode>().HasKey(cf => new { cf.CharacterId, cf.EpisodeId });
 
+            modelBuilder.Entity<Character>().HasIndex(c => c.Name).IsUnique();
+            modelBuilder.Entity<Episode>().HasIndex(e => e.Name).IsUnique();
+
+
             modelBuilder.Entity<CharacterFriendship>()
                 .HasOne<Character>(cf => cf.Friend)
                 .WithMany()

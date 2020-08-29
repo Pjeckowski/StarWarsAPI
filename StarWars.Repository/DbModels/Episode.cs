@@ -7,6 +7,7 @@ namespace StarWars.Repository.DbModels
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public string Name { get; set; }
         public virtual IList<CharacterEpisode> Characters { get; set; }
     }
