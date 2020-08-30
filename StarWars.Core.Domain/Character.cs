@@ -7,6 +7,6 @@ namespace StarWars.Core.Domain
     {
         public string Name { get; set; }
         public List<string> Episodes { get; set; }
-        public List<string> Friends { get; set; }
+        public List<Character> Friends { get; set; }
     }
 }

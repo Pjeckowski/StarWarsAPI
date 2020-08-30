@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StarWars.Application.Contract\StarWars.Application.Contract.csproj" />
+    <ProjectReference Include="..\StarWars.Application\StarWars.Application.csproj" />
+    <ProjectReference Include="..\StarWars.Core.Contract\StarWars.Core.Contract.csproj" />
+    <ProjectReference Include="..\StarWars.Core\StarWars.Core.csproj" />
+    <ProjectReference Include="..\StarWars.Repository\StarWars.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

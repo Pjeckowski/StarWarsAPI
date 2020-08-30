@@ -2,10 +2,10 @@
 {
     public class CharacterEpisode
     {
-        public int CharacterId { get; set; }
+        public string CharacterName { get; set; }
         public virtual Character Character { get; set; }
 
-        public int EpisodeId { get; set; }
+        public string EpisodeName { get; set; }
         public virtual Episode Episode { get; set; }
     }
 }

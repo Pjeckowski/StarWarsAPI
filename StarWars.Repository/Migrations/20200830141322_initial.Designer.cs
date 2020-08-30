@@ -9,8 +9,8 @@ using StarWars.Repository.DbModels;
 namespace StarWars.Repository.Migrations
 {
     [DbContext(typeof(StarWarsDbContext))]
-    [Migration("20200829123600_Initial")]
-    partial class Initial
+    [Migration("20200830141322_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,83 +22,71 @@ namespace StarWars.Repository.Migrations
 
             modelBuilder.Entity("StarWars.Repository.DbModels.Character", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Name");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Character");
+                    b.ToTable("Characters");
                 });
 
             modelBuilder.Entity("StarWars.Repository.DbModels.CharacterEpisode", b =>
                 {
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("int");
+                    b.Property<string>("CharacterName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("EpisodeId")
-                        .HasColumnType("int");
+                    b.Property<string>("EpisodeName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("CharacterId", "EpisodeId");
+                    b.HasKey("CharacterName", "EpisodeName");
 
-                    b.HasIndex("EpisodeId");
+                    b.HasIndex("EpisodeName");
 
-                    b.ToTable("CharacterEpisode");
+                    b.ToTable("CharacterEpisodes");
                 });
 
             modelBuilder.Entity("StarWars.Repository.DbModels.CharacterFriendship", b =>
                 {
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("int");
+                    b.Property<string>("CharacterName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("FriendId")
-                        .HasColumnType("int");
+                    b.Property<string>("FriendName")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("CharacterId", "FriendId");
+                    b.HasKey("CharacterName", "FriendName");
 
-                    b.HasIndex("FriendId");
+                    b.HasIndex("FriendName");
 
-                    b.ToTable("CharacterFriendship");
+                    b.ToTable("CharacterFriendships");
                 });
 
             modelBuilder.Entity("StarWars.Repository.DbModels.Episode", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Name");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Episode");
+                    b.ToTable("Episodes");
                 });
 
             modelBuilder.Entity("StarWars.Repository.DbModels.CharacterEpisode", b =>
                 {
                     b.HasOne("StarWars.Repository.DbModels.Character", "Character")
                         .WithMany("Episodes")
-                        .HasForeignKey("CharacterId")
+                        .HasForeignKey("CharacterName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("StarWars.Repository.DbModels.Episode", "Episode")
                         .WithMany("Characters")
-                        .HasForeignKey("EpisodeId")
+                        .HasForeignKey("EpisodeName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -106,14 +94,14 @@ namespace StarWars.Repository.Migrations
             modelBuilder.Entity("StarWars.Repository.DbModels.CharacterFriendship", b =>
                 {
                     b.HasOne("StarWars.Repository.DbModels.Character", "Character")
-                        .WithMany("Friends")
-                        .HasForeignKey("CharacterId")
+                        .WithMany("Friendships")
+                        .HasForeignKey("CharacterName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("StarWars.Repository.DbModels.Character", "Friend")
                         .WithMany()
-                        .HasForeignKey("FriendId")
+                        .HasForeignKey("FriendName")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

@@ -9,6 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StarWars.Application.Contract\StarWars.Application.Contract.csproj" />
+    <ProjectReference Include="..\StarWars.Bootstrap\StarWars.Bootstrap.csproj" />
     <ProjectReference Include="..\StarWars.Web.Contract\StarWars.Web.Contract.csproj" />
   </ItemGroup>
 

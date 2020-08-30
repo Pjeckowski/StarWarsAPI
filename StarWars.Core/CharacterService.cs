@@ -11,7 +11,9 @@ namespace StarWars.Core
     {
         private readonly ICharacterRepository _characterRepository;
         private readonly IEpisodeRepository _episodeRepository;
-        
+
+        //TODO
+#warning Kick validation and error handling to own implementations
         public CharacterService(ICharacterRepository characterRepository, IEpisodeRepository episodeRepository)
         {
             _characterRepository = characterRepository;
@@ -24,13 +26,13 @@ namespace StarWars.Core
                 return null;
 
             var existingEpisodes = await _episodeRepository.GetExisting(character.Episodes).ConfigureAwait(false);
-            var missingEpisodes = existingEpisodes.Except(character.Episodes);
+            var missingEpisodes = character.Episodes.Except(existingEpisodes);
 
             if (missingEpisodes.Any())
                 return null;
             
-            var existingCharacters = await _characterRepository.GetExisting(character.Friends).ConfigureAwait(false);
-            var missingCharacters = character.Friends.Except(existingCharacters);
+            var existingCharacters = await _characterRepository.GetExisting(character.Friends.Select(f => f.Name).ToList()).ConfigureAwait(false);
+            var missingCharacters = character.Friends.Select(f => f.Name).Except(existingCharacters);
             
             if (missingCharacters.Any())
                 return null;
@@ -66,8 +68,8 @@ namespace StarWars.Core
             if (missingEpisodes.Any())
                 return null;
 
-            var existingFriends = await _characterRepository.GetExisting(character.Friends.ToList()).ConfigureAwait(false);
-            var missingFriends = character.Friends.Except(existingFriends);
+            var existingFriends = await _characterRepository.GetExisting(character.Friends.Select(f => f.Name).ToList()).ConfigureAwait(false);
+            var missingFriends = character.Friends.Select(f => f.Name).Except(existingFriends);
 
             if (missingFriends.Any())
                 return null;

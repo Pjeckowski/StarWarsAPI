@@ -2,10 +2,10 @@
 {
     public class CharacterFriendship
     {
-        public int CharacterId { get; set; }
+        public string CharacterName { get; set; }
         public virtual Character Character { get; set; }
 
-        public int FriendId {get; set;}
+        public string FriendName {get; set;}
         public virtual Character Friend { get; set; }
     }
 }
