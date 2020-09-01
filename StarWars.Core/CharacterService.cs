@@ -4,21 +4,21 @@ using StarWars.Core.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-using StarWars.Core.RuleValidators;
+using StarWars.Core.BusinessRuleValidators;
 
 namespace StarWars.Core
 {
     public class CharacterService : ICharacterService
     {
         private readonly ICharacterRepository _characterRepository;
-        private readonly ICreateCharacterValidator _addCharacterValidator;
-        private readonly IUpdateCharacterValidator _updateCharacterValidator;
-        private readonly IDeleteCharacterValidator _deleteCharacterValidator;
+        private readonly ICreateRuleValidator<Character> _addCharacterValidator;
+        private readonly IUpdateRuleValidator<Character> _updateCharacterValidator;
+        private readonly IDeleteRuleValidator<Character> _deleteCharacterValidator;
 
         //TODO
 #warning Kick validation and error handling to own implementations
-        public CharacterService(ICharacterRepository characterRepository, ICreateCharacterValidator addCharacterValidator, 
-            IUpdateCharacterValidator updateCharacterValidator, IDeleteCharacterValidator deleteCharacterValidator)
+        public CharacterService(ICharacterRepository characterRepository, ICreateRuleValidator<Character> addCharacterValidator,
+            IUpdateRuleValidator<Character> updateCharacterValidator, IDeleteRuleValidator<Character> deleteCharacterValidator)
         {
             _characterRepository = characterRepository;
             _addCharacterValidator = addCharacterValidator;
@@ -28,7 +28,7 @@ namespace StarWars.Core
 
         public async Task<Character> CreateAsync(Character character)
         {
-            await _addCharacterValidator.Validate(character).ConfigureAwait(false);
+            await _addCharacterValidator.ValidateAsync(character).ConfigureAwait(false);
 
             return await _characterRepository.CreateAsync(character).ConfigureAwait(false);
         }
@@ -40,7 +40,7 @@ namespace StarWars.Core
             if (null == character)
                 return null;
 
-            await _deleteCharacterValidator.Validate(character).ConfigureAwait(false);
+            await _deleteCharacterValidator.ValidateAsync(character).ConfigureAwait(false);
             
             await _characterRepository.DeleteByNameAsync(characterName).ConfigureAwait(false);
 
@@ -59,7 +59,7 @@ namespace StarWars.Core
 
         public async Task<Character> UpdateAsync(Character character)
         {
-            await _updateCharacterValidator.Validate(character).ConfigureAwait(false);
+            await _updateCharacterValidator.ValidateAsync(character).ConfigureAwait(false);
 
             if ((await _characterRepository.GetExistingAsync(new List<string> { character.Name })).Any())
                 return await _characterRepository.UpdateAsync(character);

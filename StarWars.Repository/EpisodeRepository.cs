@@ -19,14 +19,6 @@ namespace StarWars.Repository
             _episodeMapper = episodeMapper;
         }
 
-        public async Task<string> CreateAsync(string episodeName)
-        {
-            DbModels.Episode episode = new DbModels.Episode { Name = episodeName };
-            await _context.AddAsync(episode).ConfigureAwait(false);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return episode.Name;
-        }
-
         public async Task<Core.Domain.Episode> DeleteByNameAsync(string episodeName)
         {
             var dbEpisode = await _context.Episodes.SingleOrDefaultAsync(e => e.Name.Equals(episodeName))
@@ -60,6 +52,14 @@ namespace StarWars.Repository
         public async Task<List<string>> GetExistingAsync(List<string> episodeNames)
         {
             return await _context.Episodes.Where(e => episodeNames.Contains(e.Name)).Select(e => e.Name).ToListAsync().ConfigureAwait(false);
+        }
+
+        public async Task<Core.Domain.Episode> CreateAsync(string episodeName)
+        {
+            Episode episode = new Episode { Name = episodeName };
+            await _context.AddAsync(episode).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            return _episodeMapper.Map(episode);
         }
     }
 }

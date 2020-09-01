@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StarWars.Core.RuleValidators
+namespace StarWars.Core.BusinessRuleValidators
 {
     public class CharacterValidatorBase
     {

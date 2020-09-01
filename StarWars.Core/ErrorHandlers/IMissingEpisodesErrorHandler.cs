@@ -5,6 +5,6 @@ namespace StarWars.Core.ErrorHandlers
 {
     public interface IMissingEpisodesErrorHandler
     {
-        Task Handle(List<string> episodes);
+        Task HandleAsync(List<string> episodes);
     }
 }

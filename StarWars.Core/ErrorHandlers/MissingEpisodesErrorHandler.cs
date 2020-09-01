@@ -6,7 +6,7 @@ namespace StarWars.Core.ErrorHandlers
 {
     public class MissingEpisodesErrorHandler : IMissingEpisodesErrorHandler
     {
-        public async Task Handle(List<string> episodes)
+        public async Task HandleAsync(List<string> episodes)
         {
             //maybe someday...
             throw new MissingResourceException("Episode", "Episode", episodes);

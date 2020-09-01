@@ -5,6 +5,6 @@ namespace StarWars.Core.ErrorHandlers
 {
     public interface IMissingFriendsErrorHandler
     {
-        Task Handle(List<string> friends);
+        Task HandleAsync(List<string> friends);
     }
 }

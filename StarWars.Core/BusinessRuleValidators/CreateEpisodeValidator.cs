@@ -1,12 +1,13 @@
 ﻿using StarWars.Core.Domain;
+using StarWars.Core.Exceptions;
 using StarWars.Core.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StarWars.Core.RuleValidators
+namespace StarWars.Core.BusinessRuleValidators
 {
-    public class CreateEpisodeValidator : ICreateEpisodeValidator
+    public class CreateEpisodeValidator : ICreateRuleValidator<Episode>
     {
         private readonly IEpisodeRepository _episodeRepository;
 

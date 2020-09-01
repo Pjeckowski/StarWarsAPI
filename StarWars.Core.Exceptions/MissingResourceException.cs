@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace StarWars.Core.Exceptions
 {
-    public class MissingResourceException : Exception
+    public class MissingResourceException : BusinessRuleException
     {
         public string ResourceType { get; private set; }
         public string ResourceName { get; private set; }
@@ -12,16 +12,16 @@ namespace StarWars.Core.Exceptions
 
         private static string BuildMessage(string resourceName, List<string> resources)
         {
-            var message = $"Given {resourceName}(s) are missing: ";
+            var sb = new StringBuilder();            
+            sb.Append($"Given {resourceName}(s) are missing: ");
             foreach(var resource in resources)
             {
-                message += resource;
+                sb.Append(resource);
 
                 if (!resource.Equals(resources.Last()))
-                    message += ", ";
-            }
-
-            return message + ".";
+                    sb.Append(", ");
+            }            
+            return sb.Append(".").ToString();
         }
 
         public MissingResourceException(string resourceType, string resourceName, List<string> resources)

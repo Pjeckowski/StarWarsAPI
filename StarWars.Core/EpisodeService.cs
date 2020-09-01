@@ -1,56 +1,59 @@
-﻿using StarWars.Core.Contract;
+﻿using StarWars.Core.BusinessRuleValidators;
+using StarWars.Core.Contract;
 using StarWars.Core.Domain;
 using StarWars.Core.Repositories;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace StarWars.Core
 {
     public class EpisodeService : IEpisodeService
     {
-        private readonly IEpisodeRepository _repository;
+        private readonly IEpisodeRepository _episodeRepository;
+        private readonly ICreateRuleValidator<Episode> _createEpisodeValidator;
+        private readonly IDeleteRuleValidator<Episode> _deleteEpisodeValidator;
 
         //TODO
 #warning Kick validation and error handling to own implementations
-        public EpisodeService(IEpisodeRepository repository)
+        public EpisodeService(IEpisodeRepository episodeRepository,
+            ICreateRuleValidator<Episode> createEpisodeValidator,
+            IDeleteRuleValidator<Episode> deleteEpisodeValidator)
         {
-            _repository = repository;
+            _episodeRepository = episodeRepository;
+            _createEpisodeValidator = createEpisodeValidator;
+            _deleteEpisodeValidator = deleteEpisodeValidator;
         }
+
 
         public async Task<Episode> CreateAsync(Episode episode)
         {
-            var existingEpisodes = await _repository.GetExistingAsync(new List<string> { episode.Name }).ConfigureAwait(false);
-            if (existingEpisodes.Any())
-                return null;
+            await _createEpisodeValidator.ValidateAsync(episode).ConfigureAwait(false);
 
-            var result = await _repository.CreateAsync(episode.Name).ConfigureAwait(false);
-
-            return new Episode { Name = result };
+            return await _episodeRepository.CreateAsync(episode.Name).ConfigureAwait(false);
         }
 
         public async Task<Episode> DeleteByNameAsync(string episodeName)
         {
-            Episode episode = await _repository.GetByNameAsync(episodeName).ConfigureAwait(false);
+            Episode episode = await _episodeRepository.GetByNameAsync(episodeName).ConfigureAwait(false);
 
-            if (episode.Characters.Any())
+            if (null == episode)
                 return null;
 
-            await _repository.DeleteByNameAsync(episodeName).ConfigureAwait(false);
+            await _deleteEpisodeValidator.ValidateAsync(episode).ConfigureAwait(false);
+
+            await _episodeRepository.DeleteByNameAsync(episodeName).ConfigureAwait(false);
 
             return episode;
         }
 
         public async Task<List<Episode>> GetAsync(uint get, uint skip)
         {
-            var episodes = new List<Episode>();
-
-            return await _repository.GetAsync(get, skip).ConfigureAwait(false);
+            return await _episodeRepository.GetAsync(get, skip).ConfigureAwait(false);
         }
 
         public async Task<Episode> GetByNameAsync(string episodeName)
         {
-            return await _repository.GetByNameAsync(episodeName).ConfigureAwait(false);
+            return await _episodeRepository.GetByNameAsync(episodeName).ConfigureAwait(false);
         }
     }
 }
