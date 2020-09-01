@@ -18,39 +18,39 @@ namespace StarWars.Core
             _repository = repository;
         }
 
-        public async Task<Episode> Create(Episode episode)
+        public async Task<Episode> CreateAsync(Episode episode)
         {
-            var existingEpisodes = await _repository.GetExisting(new List<string> { episode.Name }).ConfigureAwait(false);
+            var existingEpisodes = await _repository.GetExistingAsync(new List<string> { episode.Name }).ConfigureAwait(false);
             if (existingEpisodes.Any())
                 return null;
 
-            var result = await _repository.Create(episode.Name).ConfigureAwait(false);
+            var result = await _repository.CreateAsync(episode.Name).ConfigureAwait(false);
 
             return new Episode { Name = result };
         }
 
-        public async Task<Episode> DeleteByName(string episodeName)
+        public async Task<Episode> DeleteByNameAsync(string episodeName)
         {
-            Episode episode = await _repository.GetByName(episodeName).ConfigureAwait(false);
+            Episode episode = await _repository.GetByNameAsync(episodeName).ConfigureAwait(false);
 
             if (episode.Characters.Any())
                 return null;
 
-            await _repository.DeleteByName(episodeName).ConfigureAwait(false);
+            await _repository.DeleteByNameAsync(episodeName).ConfigureAwait(false);
 
             return episode;
         }
 
-        public async Task<List<Episode>> Get(uint get, uint skip)
+        public async Task<List<Episode>> GetAsync(uint get, uint skip)
         {
             var episodes = new List<Episode>();
 
-            return await _repository.Get(get, skip).ConfigureAwait(false);
+            return await _repository.GetAsync(get, skip).ConfigureAwait(false);
         }
 
-        public async Task<Episode> GetByName(string episodeName)
+        public async Task<Episode> GetByNameAsync(string episodeName)
         {
-            return await _repository.GetByName(episodeName).ConfigureAwait(false);
+            return await _repository.GetByNameAsync(episodeName).ConfigureAwait(false);
         }
     }
 }

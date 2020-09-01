@@ -6,9 +6,9 @@ namespace StarWars.Application.Contract
 {
     public interface IEpisodeApplicationService
     {
-        Task<EpisodeDTO> Create(EpisodeDTO episodeDto);
-        Task<EpisodeDTO> GetByName(string episodeName);
-        Task<List<EpisodeDTO>> Get(uint page, uint pageSize);
-        Task<EpisodeDTO> DeleteByName(string episodeName);
+        Task<EpisodeDTO> CreateAsync(EpisodeDTO episodeDto);
+        Task<EpisodeDTO> GetByNameAsync(string episodeName);
+        Task<List<EpisodeDTO>> GetAsync(uint page, uint pageSize);
+        Task<EpisodeDTO> DeleteByNameAsync(string episodeName);
     }
 }

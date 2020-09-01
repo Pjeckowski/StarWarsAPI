@@ -7,10 +7,10 @@ namespace StarWars.Core.Contract
 {
     public interface ICharacterService
     {
-        Task<List<Character>> Get(uint get, uint skip);
-        Task<Character> GetByName(string characterName);
-        Task<Character> DeleteByName(string characterName);
-        Task<Character> Update(Character character);
-        Task<Character> Create(Character character);        
+        Task<List<Character>> GetAsync(uint get, uint skip);
+        Task<Character> GetByNameAsync(string characterName);
+        Task<Character> DeleteByNameAsync(string characterName);
+        Task<Character> UpdateAsync(Character character);
+        Task<Character> CreateAsync(Character character);        
     }
 }

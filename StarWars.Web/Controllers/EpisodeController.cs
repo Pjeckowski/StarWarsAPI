@@ -26,20 +26,20 @@ namespace StarWars.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<List<EpisodeDTO>>> Get(uint page, uint pageSize)
         {
-            return Ok(await _episodeService.Get(page, pageSize).ConfigureAwait(false));
+            return Ok(await _episodeService.GetAsync(page, pageSize).ConfigureAwait(false));
         }
 
         [HttpGet]
         [Route("{episodeName}")]
         public async Task<ActionResult<CharacterDTO>>GetByName(string episodeName)
         {
-            return Ok(await _episodeService.GetByName(episodeName).ConfigureAwait(false));
+            return Ok(await _episodeService.GetByNameAsync(episodeName).ConfigureAwait(false));
         }
 
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] EpisodeDTO episode)
         {
-            var result = await _episodeService.Create(episode).ConfigureAwait(false);
+            var result = await _episodeService.CreateAsync(episode).ConfigureAwait(false);
             return CreatedAtAction(nameof(GetByName), new {episodeName = result.Name }, result);
         }
 
@@ -47,7 +47,7 @@ namespace StarWars.Web.Controllers
         [Route("{episodeName}")]
         public async Task<ActionResult<EpisodeDTO>> Delete(string episodeName)
         {
-            return Ok(await _episodeService.DeleteByName(episodeName).ConfigureAwait(false));
+            return Ok(await _episodeService.DeleteByNameAsync(episodeName).ConfigureAwait(false));
         }
     }
 }

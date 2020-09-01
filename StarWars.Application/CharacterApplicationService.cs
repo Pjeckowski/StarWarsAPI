@@ -20,36 +20,37 @@ namespace StarWars.Application
             _mapper = mapper;
         }
 
-        public async Task<CharacterDTO> Create(CharacterDTO characterDTO)
+        public async Task<CharacterDTO> CreateAsync(CharacterDTO characterDTO)
         {
             var dmCharacter = _mapper.Map<Character>(characterDTO);
-            var character = await _characterService.Create(dmCharacter).ConfigureAwait(false);
+            var character = await _characterService.CreateAsync(dmCharacter).ConfigureAwait(false);
 
             return _mapper.Map<CharacterDTO>(character);
         }
 
-        public Task<CharacterDTO> DeleteByName(string characterName)
+        public async Task<CharacterDTO> DeleteByNameAsync(string characterName)
         {
-            throw new NotImplementedException();
+            var character = await _characterService.DeleteByNameAsync(characterName).ConfigureAwait(false);
+            return _mapper.Map<CharacterDTO>(character);
         }
 
-        public async Task<List<CharacterDTO>> Get(uint page, uint pageSize)
+        public async Task<List<CharacterDTO>> GetAsync(uint page, uint pageSize)
         {
             var skip = page * pageSize;
-            var characters = await _characterService.Get(pageSize, skip).ConfigureAwait(false);
+            var characters = await _characterService.GetAsync(pageSize, skip).ConfigureAwait(false);
             return _mapper.Map<List<CharacterDTO>>(characters);
         }
 
-        public async Task<CharacterDTO> GetByName(string characterName)
+        public async Task<CharacterDTO> GetByNameAsync(string characterName)
         {
-            var character = await _characterService.GetByName(characterName).ConfigureAwait(false);
+            var character = await _characterService.GetByNameAsync(characterName).ConfigureAwait(false);
             return _mapper.Map<CharacterDTO>(character);
         }
 
-        public async Task<CharacterDTO> Update(CharacterDTO characterDTO)
+        public async Task<CharacterDTO> UpdateAsync(CharacterDTO characterDTO)
         {
             var dmCharacter = _mapper.Map<Character>(characterDTO);
-            return _mapper.Map<CharacterDTO>(await _characterService.Update(dmCharacter).ConfigureAwait(false));
+            return _mapper.Map<CharacterDTO>(await _characterService.UpdateAsync(dmCharacter).ConfigureAwait(false));
         }
     }
 }

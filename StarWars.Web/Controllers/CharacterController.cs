@@ -29,21 +29,21 @@ namespace StarWars.Web.Controllers
         public async Task<ActionResult<IEnumerable<CharacterDTO>>> Get(uint page, uint pageSize)
         {
 
-            return Ok(await _characterService.Get(page, pageSize).ConfigureAwait(false));
+            return Ok(await _characterService.GetAsync(page, pageSize).ConfigureAwait(false));
         }
 
         [HttpGet]
         [Route("{characterName}")]
         public async Task<ActionResult<CharacterDTO>>GetByName(string characterName)
         {
-            var result = await _characterService.GetByName(characterName).ConfigureAwait(false);
+            var result = await _characterService.GetByNameAsync(characterName).ConfigureAwait(false);
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CharacterDTO character)
         {
-            var result = await _characterService.Create(character).ConfigureAwait(false);
+            var result = await _characterService.CreateAsync(character).ConfigureAwait(false);
             return CreatedAtAction(nameof(GetByName), new {characterName = result.Name }, result);
         }
 
@@ -51,7 +51,7 @@ namespace StarWars.Web.Controllers
         [Route("{characterName}")]
         public async Task<ActionResult<CharacterDTO>> Delete(string characterName)
         {
-            var result = await _characterService.DeleteByName(characterName).ConfigureAwait(false);
+            var result = await _characterService.DeleteByNameAsync(characterName).ConfigureAwait(false);
             return Ok(result);
         }
     }

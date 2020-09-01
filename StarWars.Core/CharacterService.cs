@@ -4,80 +4,67 @@ using StarWars.Core.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using StarWars.Core.RuleValidators;
 
 namespace StarWars.Core
 {
     public class CharacterService : ICharacterService
     {
         private readonly ICharacterRepository _characterRepository;
-        private readonly IEpisodeRepository _episodeRepository;
+        private readonly ICreateCharacterValidator _addCharacterValidator;
+        private readonly IUpdateCharacterValidator _updateCharacterValidator;
+        private readonly IDeleteCharacterValidator _deleteCharacterValidator;
 
         //TODO
 #warning Kick validation and error handling to own implementations
-        public CharacterService(ICharacterRepository characterRepository, IEpisodeRepository episodeRepository)
+        public CharacterService(ICharacterRepository characterRepository, ICreateCharacterValidator addCharacterValidator, 
+            IUpdateCharacterValidator updateCharacterValidator, IDeleteCharacterValidator deleteCharacterValidator)
         {
             _characterRepository = characterRepository;
-            _episodeRepository = episodeRepository;
+            _addCharacterValidator = addCharacterValidator;
+            _updateCharacterValidator = updateCharacterValidator;
+            _deleteCharacterValidator = deleteCharacterValidator;
         }
 
-        public async Task<Character> Create(Character character)
+        public async Task<Character> CreateAsync(Character character)
         {
-            if ((await _characterRepository.GetExisting(new List<string> {character.Name}).ConfigureAwait(false)).Any())
-                return null;
+            await _addCharacterValidator.Validate(character).ConfigureAwait(false);
 
-            var existingEpisodes = await _episodeRepository.GetExisting(character.Episodes).ConfigureAwait(false);
-            var missingEpisodes = character.Episodes.Except(existingEpisodes);
-
-            if (missingEpisodes.Any())
-                return null;
-            
-            var existingCharacters = await _characterRepository.GetExisting(character.Friends.Select(f => f.Name).ToList()).ConfigureAwait(false);
-            var missingCharacters = character.Friends.Select(f => f.Name).Except(existingCharacters);
-            
-            if (missingCharacters.Any())
-                return null;
-
-            return await _characterRepository.Create(character).ConfigureAwait(false);
+            return await _characterRepository.CreateAsync(character).ConfigureAwait(false);
         }
 
-        public async Task<Character> DeleteByName(string characterName)
+        public async Task<Character> DeleteByNameAsync(string characterName)
         {
-            var character = await _characterRepository.GetByName(characterName).ConfigureAwait(false);
+            var character = await _characterRepository.GetByNameAsync(characterName).ConfigureAwait(false);
+
+            if (null == character)
+                return null;
+
+            await _deleteCharacterValidator.Validate(character).ConfigureAwait(false);
             
-            if(null != character)
-                await _characterRepository.DeleteByName(characterName).ConfigureAwait(false);
+            await _characterRepository.DeleteByNameAsync(characterName).ConfigureAwait(false);
 
             return character;
         }
 
-        public async Task<List<Character>> Get(uint get, uint skip)
+        public async Task<List<Character>> GetAsync(uint get, uint skip)
         {
-            return await _characterRepository.Get(get, skip).ConfigureAwait(false);
+            return await _characterRepository.GetAsync(get, skip).ConfigureAwait(false);
         }
 
-        public async Task<Character> GetByName(string characterName)
+        public async Task<Character> GetByNameAsync(string characterName)
         {
-            return await _characterRepository.GetByName(characterName).ConfigureAwait(false);
+            return await _characterRepository.GetByNameAsync(characterName).ConfigureAwait(false);
         }
 
-        public async Task<Character> Update(Character character)
+        public async Task<Character> UpdateAsync(Character character)
         {
-            var existingEpisodes = await _episodeRepository.GetExisting(character.Episodes).ConfigureAwait(false);
-            var missingEpisodes = existingEpisodes.Except(character.Episodes);
+            await _updateCharacterValidator.Validate(character).ConfigureAwait(false);
 
-            if (missingEpisodes.Any())
-                return null;
+            if ((await _characterRepository.GetExistingAsync(new List<string> { character.Name })).Any())
+                return await _characterRepository.UpdateAsync(character);
 
-            var existingFriends = await _characterRepository.GetExisting(character.Friends.Select(f => f.Name).ToList()).ConfigureAwait(false);
-            var missingFriends = character.Friends.Select(f => f.Name).Except(existingFriends);
-
-            if (missingFriends.Any())
-                return null;
-
-            if ((await _characterRepository.GetExisting(new List<string> { character.Name })).Any())
-                return await _characterRepository.Update(character);
-
-            return await _characterRepository.Create(character).ConfigureAwait(false);
+            return await _characterRepository.CreateAsync(character).ConfigureAwait(false);
         }
     }
 }

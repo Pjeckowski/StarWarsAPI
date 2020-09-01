@@ -6,9 +6,9 @@ namespace StarWars.Core.Contract
 {
     public interface IEpisodeService
     {
-        Task<Episode> Create(Episode episode);
-        Task<Episode> GetByName(string episodeName);
-        Task<List<Episode>> Get(uint get, uint skip);
-        Task<Episode> DeleteByName(string episodeName);
+        Task<Episode> CreateAsync(Episode episode);
+        Task<Episode> GetByNameAsync(string episodeName);
+        Task<List<Episode>> GetAsync(uint get, uint skip);
+        Task<Episode> DeleteByNameAsync(string episodeName);
     }
 }

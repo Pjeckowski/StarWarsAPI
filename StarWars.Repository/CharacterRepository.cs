@@ -21,7 +21,7 @@ namespace StarWars.Repository
             _characterMapper = characterMapper;
         }
 
-        public async Task<Character> Create(Character character)
+        public async Task<Character> CreateAsync(Character character)
         {
             DBCharacter dbCharacter = _characterMapper.Map(character);
 
@@ -31,22 +31,26 @@ namespace StarWars.Repository
             return character;
         }
 
-        public async Task<Character> DeleteByName(string characterName)
+        public async Task<Character> DeleteByNameAsync(string characterName)
         {
             var character = await _context.Characters.FirstOrDefaultAsync(c => c.Name.Equals(characterName)).ConfigureAwait(false);
             _context.Characters.Remove(character);
+
+            var friendships = _context.CharacterFriendships.Where(f => f.CharacterName.Equals(characterName) || f.FriendName.Equals(characterName));
+            _context.CharacterFriendships.RemoveRange(friendships);
+
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return _characterMapper.Map(character);
         }
 
-        public async Task<List<Character>> Get(uint get, uint skip)
+        public async Task<List<Character>> GetAsync(uint get, uint skip)
         {
             var dbCharacters = await _context.Characters.Skip((int)skip).Take((int)get).Include(c => c.Friendships).Include(c => c.Episodes).ToListAsync().ConfigureAwait(false);
             return _characterMapper.Map(dbCharacters);
         }
 
-        public async Task<Character> GetByName(string characterName)
+        public async Task<Character> GetByNameAsync(string characterName)
         {
             return _characterMapper.Map(await _context.Characters.Where(c => c.Name.Equals(characterName))
                 .Include(c => c.Episodes)
@@ -54,12 +58,12 @@ namespace StarWars.Repository
                 .SingleOrDefaultAsync().ConfigureAwait(false));
         }
 
-        public async Task<List<string>> GetExisting(List<string> characterNames)
+        public async Task<List<string>> GetExistingAsync(List<string> characterNames)
         {
             return await _context.Characters.Where(c => characterNames.Contains(c.Name)).Select(c => c.Name).ToListAsync();
         }
 
-        public async Task<Character> Update(Character character)
+        public async Task<Character> UpdateAsync(Character character)
         {
             var targetCharacter = await _context.Characters.SingleOrDefaultAsync(c => c.Name.Equals(character.Name)).ConfigureAwait(false);
 

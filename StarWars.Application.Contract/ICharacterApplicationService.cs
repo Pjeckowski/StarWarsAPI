@@ -7,10 +7,10 @@ namespace StarWars.Application.Contract
 {
     public interface ICharacterApplicationService
     {
-        Task<List<CharacterDTO>> Get(uint page, uint pageSize);
-        Task<CharacterDTO> GetByName(string characterName);
-        Task<CharacterDTO> DeleteByName(string characterName);
-        Task<CharacterDTO> Update(CharacterDTO character);
-        Task<CharacterDTO> Create(CharacterDTO character);
+        Task<List<CharacterDTO>> GetAsync(uint page, uint pageSize);
+        Task<CharacterDTO> GetByNameAsync(string characterName);
+        Task<CharacterDTO> DeleteByNameAsync(string characterName);
+        Task<CharacterDTO> UpdateAsync(CharacterDTO character);
+        Task<CharacterDTO> CreateAsync(CharacterDTO character);
     }
 }

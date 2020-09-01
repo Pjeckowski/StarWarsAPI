@@ -19,7 +19,7 @@ namespace StarWars.Repository
             _episodeMapper = episodeMapper;
         }
 
-        public async Task<string> Create(string episodeName)
+        public async Task<string> CreateAsync(string episodeName)
         {
             DbModels.Episode episode = new DbModels.Episode { Name = episodeName };
             await _context.AddAsync(episode).ConfigureAwait(false);
@@ -27,7 +27,7 @@ namespace StarWars.Repository
             return episode.Name;
         }
 
-        public async Task<Core.Domain.Episode> DeleteByName(string episodeName)
+        public async Task<Core.Domain.Episode> DeleteByNameAsync(string episodeName)
         {
             var dbEpisode = await _context.Episodes.SingleOrDefaultAsync(e => e.Name.Equals(episodeName))
                 .ConfigureAwait(false);
@@ -41,7 +41,7 @@ namespace StarWars.Repository
             return _episodeMapper.Map(dbEpisode);            
         }
 
-        public async Task<List<Core.Domain.Episode>> Get(uint get, uint skip)
+        public async Task<List<Core.Domain.Episode>> GetAsync(uint get, uint skip)
         {
             var dbEpisodes = await _context.Episodes.Skip((int)skip).Take((int)get)
                 .ToListAsync().ConfigureAwait(false);
@@ -49,7 +49,7 @@ namespace StarWars.Repository
             return _episodeMapper.Map(dbEpisodes);
         }
 
-        public async Task<Core.Domain.Episode> GetByName(string episodeName)
+        public async Task<Core.Domain.Episode> GetByNameAsync(string episodeName)
         {
             var episode = await _context.Episodes.Where(e => e.Name.Equals(episodeName))
                 .Include(e => e.Characters).SingleOrDefaultAsync().ConfigureAwait(false);
@@ -57,7 +57,7 @@ namespace StarWars.Repository
             return _episodeMapper.Map(episode);
         }
 
-        public async Task<List<string>> GetExisting(List<string> episodeNames)
+        public async Task<List<string>> GetExistingAsync(List<string> episodeNames)
         {
             return await _context.Episodes.Where(e => episodeNames.Contains(e.Name)).Select(e => e.Name).ToListAsync().ConfigureAwait(false);
         }

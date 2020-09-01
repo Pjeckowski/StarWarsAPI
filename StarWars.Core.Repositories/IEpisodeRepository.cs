@@ -6,10 +6,10 @@ namespace StarWars.Core.Repositories
 {
     public interface IEpisodeRepository
     {
-        Task<List<string>> GetExisting(List<string> episodeNames);
-        Task<string> Create(string episodeName);
-        Task<List<Episode>> Get(uint get, uint skip);
-        Task<Episode> GetByName(string episodeName);
-        Task<Episode> DeleteByName(string episodeName);
+        Task<List<string>> GetExistingAsync(List<string> episodeNames);
+        Task<string> CreateAsync(string episodeName);
+        Task<List<Episode>> GetAsync(uint get, uint skip);
+        Task<Episode> GetByNameAsync(string episodeName);
+        Task<Episode> DeleteByNameAsync(string episodeName);
     }
 }
