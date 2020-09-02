@@ -12,6 +12,7 @@ namespace StarWars.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [ServiceFilter(typeof(ExceptionHandlerFilter))]
     public class EpisodeController : ControllerBase
     {
         private readonly IEpisodeApplicationService _episodeService;

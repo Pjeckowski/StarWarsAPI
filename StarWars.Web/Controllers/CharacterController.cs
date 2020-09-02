@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace StarWars.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [ServiceFilter(typeof(ExceptionHandlerFilter))]
     public class CharacterController : ControllerBase
     {
         private readonly ICharacterApplicationService _characterService;
@@ -25,7 +27,7 @@ namespace StarWars.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterDTO>>> Get(uint page, uint pageSize)
         {
-
+            throw new Exception("Makapaka!");
             return Ok(await _characterService.GetAsync(page, pageSize).ConfigureAwait(false));
         }
 

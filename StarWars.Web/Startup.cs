@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.EventLog;
 using StarWars.Bootstrap;
 
 namespace StarWars.Web
@@ -22,16 +22,24 @@ namespace StarWars.Web
             services.AddControllers();
             services.AddSwaggerGen();
             Bootstrapper.RegisterComponents(services, Configuration);
+
+            //add logging
+            if(!System.Diagnostics.EventLog.SourceExists("StarWarsService"))
+            {
+                System.Diagnostics.EventLog.CreateEventSource("StarWarsService", "Application");
+            }
+            services.Configure<EventLogSettings>(settings => settings.SourceName = "StarWarsService");
+            services.AddScoped<ExceptionHandlerFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
