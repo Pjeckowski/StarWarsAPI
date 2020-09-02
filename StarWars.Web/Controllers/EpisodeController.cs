@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using StarWars.Application.Contract;
+using StarWars.Core.Domain;
+using StarWars.Core.Exceptions;
 using StarWars.Web.Contract;
 
 namespace StarWars.Web.Controllers
@@ -12,14 +14,10 @@ namespace StarWars.Web.Controllers
     [Route("[controller]")]
     public class EpisodeController : ControllerBase
     {
-        private readonly ILogger<EpisodeController> _logger;
         private readonly IEpisodeApplicationService _episodeService;
 
-        //TODO
-#warning Add error handling to proper codes and hateoas support
         public EpisodeController(ILogger<EpisodeController> logger, IEpisodeApplicationService episodeService)
         {
-            _logger = logger;
             _episodeService = episodeService;
         }
 
@@ -33,21 +31,46 @@ namespace StarWars.Web.Controllers
         [Route("{episodeName}")]
         public async Task<ActionResult<CharacterDTO>>GetByName(string episodeName)
         {
-            return Ok(await _episodeService.GetByNameAsync(episodeName).ConfigureAwait(false));
+            var episode = await _episodeService.GetByNameAsync(episodeName).ConfigureAwait(false);
+            if (null == episode)
+                return NotFound(new { error = $"Episode with name: {episode} does not exist." });
+            return Ok(episode);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] EpisodeDTO episode)
         {
-            var result = await _episodeService.CreateAsync(episode).ConfigureAwait(false);
+            EpisodeDTO result;
+            try
+            {
+                result = await _episodeService.CreateAsync(episode).ConfigureAwait(false);
+            }
+            catch(BusinessRuleException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
             return CreatedAtAction(nameof(GetByName), new {episodeName = result.Name }, result);
         }
 
         [HttpDelete]
         [Route("{episodeName}")]
-        public async Task<ActionResult<EpisodeDTO>> Delete(string episodeName)
+        public async Task<ActionResult<EpisodeWithCharactersDTO>> Delete(string episodeName)
         {
-            return Ok(await _episodeService.DeleteByNameAsync(episodeName).ConfigureAwait(false));
+            EpisodeWithCharactersDTO result;
+            try
+            {
+                result = await _episodeService.DeleteByNameAsync(episodeName).ConfigureAwait(false);
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+            if (null == result)
+                return NotFound(new { error = $"Episode with name: {episodeName} was not found." });
+
+            return Ok(result);
         }
     }
 }

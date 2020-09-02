@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using StarWars.Application.Contract;
+using StarWars.Core.Exceptions;
 using StarWars.Web.Contract;
 
 namespace StarWars.Web.Controllers
@@ -14,14 +15,10 @@ namespace StarWars.Web.Controllers
     [Route("[controller]")]
     public class CharacterController : ControllerBase
     {
-        private readonly ILogger<CharacterController> _logger;
         private readonly ICharacterApplicationService _characterService;
 
-        //TODO
-#warning Add error handling to proper codes and hateoas support
         public CharacterController(ILogger<CharacterController> logger, ICharacterApplicationService characterService)
         {
-            _logger = logger;
             _characterService = characterService;
         }
 
@@ -37,22 +34,61 @@ namespace StarWars.Web.Controllers
         public async Task<ActionResult<CharacterDTO>>GetByName(string characterName)
         {
             var result = await _characterService.GetByNameAsync(characterName).ConfigureAwait(false);
+            if (null == result)
+                return NotFound(new { error = $"Character with name: {characterName} was not found." });
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CharacterDTO character)
         {
-            var result = await _characterService.CreateAsync(character).ConfigureAwait(false);
+            CharacterDTO result;
+            try
+            {
+                result = await _characterService.CreateAsync(character).ConfigureAwait(false);
+            }
+            catch(BusinessRuleException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
             return CreatedAtAction(nameof(GetByName), new {characterName = result.Name }, result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Update([FromBody]CharacterDTO character)
+        {
+            CharacterDTO result;
+            try
+            {
+                result = await _characterService.UpdateAsync(character);
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete]
         [Route("{characterName}")]
         public async Task<ActionResult<CharacterDTO>> Delete(string characterName)
         {
-            var result = await _characterService.DeleteByNameAsync(characterName).ConfigureAwait(false);
+            CharacterDTO result;
+            try
+            {
+                result = await _characterService.DeleteByNameAsync(characterName);
+            }
+            catch (BusinessRuleException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+            if(result == null)
+                return NotFound(new { error = $"Character with name: {characterName} was not found." });
+
             return Ok(result);
-        }
+        }   
     }
 }

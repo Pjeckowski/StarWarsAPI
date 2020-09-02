@@ -70,6 +70,11 @@ namespace StarWars.Repository
             if (null == targetCharacter)
                 return null;
 
+            //clear old data
+            _context.CharacterFriendships.RemoveRange(_context.CharacterFriendships.Where(fs => fs.CharacterName.Equals(targetCharacter.Name)));
+            _context.CharacterEpisodes.RemoveRange(_context.CharacterEpisodes.Where(e => e.CharacterName.Equals(targetCharacter.Name)));
+
+            //add new data
             var mappedCharacter = _characterMapper.Map(character);
 
             targetCharacter.Friendships = mappedCharacter.Friendships;

@@ -25,10 +25,10 @@ namespace StarWars.Application
             return _episodeMapper.Map<EpisodeDTO>(addedEpisode);
         }
 
-        public async Task<EpisodeDTO> DeleteByNameAsync(string episodeName)
+        public async Task<EpisodeWithCharactersDTO> DeleteByNameAsync(string episodeName)
         {
             var episode = await _episodeService.DeleteByNameAsync(episodeName).ConfigureAwait(false);
-            return _episodeMapper.Map<EpisodeDTO>(episode);
+            return _episodeMapper.Map<EpisodeWithCharactersDTO>(episode);
         }
 
         public async Task<List<EpisodeDTO>> GetAsync(uint page, uint pageSize)
@@ -38,10 +38,10 @@ namespace StarWars.Application
             return _episodeMapper.Map<List<EpisodeDTO>>(episodes);            
         }
 
-        public async Task<EpisodeDTO> GetByNameAsync(string episodeName)
+        public async Task<EpisodeWithCharactersDTO> GetByNameAsync(string episodeName)
         {
             var episode = await _episodeService.GetByNameAsync(episodeName).ConfigureAwait(false);
-            return _episodeMapper.Map<EpisodeDTO>(episode);
+            return _episodeMapper.Map<EpisodeWithCharactersDTO>(episode);
         }
     }
 }

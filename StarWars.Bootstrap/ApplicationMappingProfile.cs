@@ -16,7 +16,10 @@ namespace StarWars.Bootstrap
                 .ReverseMap()
                 .ForMember(dest => dest.Friends, source => source.MapFrom(so => MapFriendsToDTO(so.Friends)));
 
-            CreateMap<Episode, EpisodeDTO>()
+            CreateMap<Episode, EpisodeDTO>()                
+                .ReverseMap();
+
+            CreateMap<Episode, EpisodeWithCharactersDTO>()
                 .ForMember(dest => dest.Characters, opt => opt.MapFrom(so => MapEpisodeCharactersToDTO(so.Characters)))
                 .ReverseMap();
         }
