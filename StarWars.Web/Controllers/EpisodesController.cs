@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -11,13 +12,14 @@ using StarWars.Web.Contract;
 namespace StarWars.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ServiceFilter(typeof(ExceptionHandlerFilter))]
-    public class EpisodeController : ControllerBase
+    public class EpisodesController : ControllerBase
     {
         private readonly IEpisodeApplicationService _episodeService;
 
-        public EpisodeController(ILogger<EpisodeController> logger, IEpisodeApplicationService episodeService)
+        public EpisodesController(ILogger<EpisodesController> logger, IEpisodeApplicationService episodeService)
         {
             _episodeService = episodeService;
         }
@@ -28,6 +30,7 @@ namespace StarWars.Web.Controllers
             return Ok(await _episodeService.GetAsync(page, pageSize).ConfigureAwait(false));
         }
 
+        [ActionName("GetByName")]
         [HttpGet]
         [Route("{episodeName}")]
         public async Task<ActionResult<CharacterDTO>>GetByName(string episodeName)
@@ -51,7 +54,8 @@ namespace StarWars.Web.Controllers
                 return BadRequest(new { error = ex.Message });
             }
 
-            return CreatedAtAction(nameof(GetByName), new {episodeName = result.Name }, result);
+            var path = $"{Request.Scheme}://{Request.Host}{Request.Path}/{result.Name}";
+            return Created(path, result);
         }
 
         [HttpDelete]

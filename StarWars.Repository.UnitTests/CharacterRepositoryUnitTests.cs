@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StarWars.Repository.UnitTests
 {
     [TestClass]
+    [ExcludeFromCodeCoverage]
     public class CharacterRepositoryUnitTests
     {
         private ICharacterRepository _characterRepository;
@@ -31,6 +33,7 @@ namespace StarWars.Repository.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         public async Task Create_OnlyCharNameGiven_CharacterCreated()
         {
             //arrange
@@ -63,6 +66,7 @@ namespace StarWars.Repository.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Unit")]
         public async Task Create_CharacterWithExistingFriendsAndEpisodesGiven_CharacterCreated()
         {
             //arrange

@@ -13,8 +13,6 @@ namespace StarWars.Core
         private readonly ICreateRuleValidator<Episode> _createEpisodeValidator;
         private readonly IDeleteRuleValidator<Episode> _deleteEpisodeValidator;
 
-        //TODO
-#warning Kick validation and error handling to own implementations
         public EpisodeService(IEpisodeRepository episodeRepository,
             ICreateRuleValidator<Episode> createEpisodeValidator,
             IDeleteRuleValidator<Episode> deleteEpisodeValidator)

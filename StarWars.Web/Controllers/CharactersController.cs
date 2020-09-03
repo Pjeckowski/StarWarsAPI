@@ -13,13 +13,14 @@ using StarWars.Web.Contract;
 namespace StarWars.Web.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1")]
+    [Route("v{version:apiVersion}/[controller]")]
     [ServiceFilter(typeof(ExceptionHandlerFilter))]
-    public class CharacterController : ControllerBase
+    public class CharactersController : ControllerBase
     {
         private readonly ICharacterApplicationService _characterService;
 
-        public CharacterController(ILogger<CharacterController> logger, ICharacterApplicationService characterService)
+        public CharactersController(ILogger<CharactersController> logger, ICharacterApplicationService characterService)
         {
             _characterService = characterService;
         }
@@ -27,7 +28,6 @@ namespace StarWars.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CharacterDTO>>> Get(uint page, uint pageSize)
         {
-            throw new Exception("Makapaka!");
             return Ok(await _characterService.GetAsync(page, pageSize).ConfigureAwait(false));
         }
 
@@ -53,8 +53,8 @@ namespace StarWars.Web.Controllers
             {
                 return BadRequest(new { error = ex.Message });
             }
-
-            return CreatedAtAction(nameof(GetByName), new {characterName = result.Name }, result);
+            var path = $"{Request.Scheme}://{Request.Host}{Request.Path}/{result.Name}";
+            return Created(path, result);
         }
 
         [HttpPut]

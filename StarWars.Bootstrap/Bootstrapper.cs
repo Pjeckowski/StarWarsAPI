@@ -12,8 +12,8 @@ using StarWars.Repository;
 using StarWars.Repository.DbModels;
 using StarWars.Repository.Mappers;
 using System;
-using System.Configuration;
 using Microsoft.Extensions.Configuration;
+
 namespace StarWars.Bootstrap
 {
     public class Bootstrapper
@@ -37,9 +37,6 @@ namespace StarWars.Bootstrap
             services.AddScoped<IMissingFriendsErrorHandler, MissingFriendsErrorHandler>();
             services.AddScoped<IMissingEpisodesErrorHandler, MissingEpisodesErrorHandler>();
             services.AddScoped<IEpisodeHasCharactersErrorHandler, EpisodeHasCharactersErrorHandler>();
-
-
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
     }

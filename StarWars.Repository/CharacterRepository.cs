@@ -33,11 +33,12 @@ namespace StarWars.Repository
 
         public async Task<Character> DeleteByNameAsync(string characterName)
         {
-            var character = await _context.Characters.FirstOrDefaultAsync(c => c.Name.Equals(characterName)).ConfigureAwait(false);
-            _context.Characters.Remove(character);
+            var character = await _context.Characters.Where(c => c.Name.Equals(characterName))
+                .Include(c => c.Friendships)
+                .Include(c => c.Episodes)
+                .SingleOrDefaultAsync().ConfigureAwait(false);
 
-            var friendships = _context.CharacterFriendships.Where(f => f.CharacterName.Equals(characterName) || f.FriendName.Equals(characterName));
-            _context.CharacterFriendships.RemoveRange(friendships);
+            _context.Characters.Remove(character);
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 

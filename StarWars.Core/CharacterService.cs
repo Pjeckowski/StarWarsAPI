@@ -15,8 +15,6 @@ namespace StarWars.Core
         private readonly IUpdateRuleValidator<Character> _updateCharacterValidator;
         private readonly IDeleteRuleValidator<Character> _deleteCharacterValidator;
 
-        //TODO
-#warning Kick validation and error handling to own implementations
         public CharacterService(ICharacterRepository characterRepository, ICreateRuleValidator<Character> addCharacterValidator,
             IUpdateRuleValidator<Character> updateCharacterValidator, IDeleteRuleValidator<Character> deleteCharacterValidator)
         {
@@ -42,9 +40,9 @@ namespace StarWars.Core
 
             await _deleteCharacterValidator.ValidateAsync(character).ConfigureAwait(false);
             
-            await _characterRepository.DeleteByNameAsync(characterName).ConfigureAwait(false);
+            var deletedCharacter = await _characterRepository.DeleteByNameAsync(characterName).ConfigureAwait(false);
 
-            return character;
+            return deletedCharacter;
         }
 
         public async Task<List<Character>> GetAsync(uint get, uint skip)
